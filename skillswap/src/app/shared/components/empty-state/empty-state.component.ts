@@ -1,7 +1,8 @@
 import {
-  Component, input, ChangeDetectionStrategy,
+  Component, input, ChangeDetectionStrategy, inject, computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 
 export type EmptyStateVariant =
@@ -106,7 +107,7 @@ const configs: Record<EmptyStateVariant, EmptyConfig> = {
   template: `
     <div class="flex flex-col items-center justify-center text-center py-16 px-6 select-none">
       <!-- Illustration -->
-      <div class="w-40 h-32 mb-6 opacity-90" [innerHTML]="cfg().svg"></div>
+      <div class="w-40 h-32 mb-6 opacity-90" [innerHTML]="safeSvg()"></div>
 
       <!-- Heading -->
       <h3 class="text-base font-bold text-slate-700 dark:text-slate-200 mb-1">
@@ -146,6 +147,8 @@ const configs: Record<EmptyStateVariant, EmptyConfig> = {
   `,
 })
 export class EmptyStateComponent {
+  private readonly sanitizer = inject(DomSanitizer);
+
   readonly variant  = input<EmptyStateVariant>('no-results');
   readonly title    = input<string>('');
   readonly body     = input<string>('');
@@ -155,4 +158,9 @@ export class EmptyStateComponent {
   readonly ctaClick = input<(() => void) | null>(null);
 
   cfg() { return configs[this.variant()]; }
+
+  /** Bypass Angular's HTML sanitizer for trusted inline SVG illustrations. */
+  readonly safeSvg = computed<SafeHtml>(() =>
+    this.sanitizer.bypassSecurityTrustHtml(this.cfg().svg)
+  );
 }

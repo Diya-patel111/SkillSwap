@@ -568,9 +568,11 @@ export class SessionsComponent implements OnInit {
 
   editForm: UpdateSessionPayload & { title?: string; scheduledAt?: string; durationMins?: number } = {};
 
-  /** All accepted swaps — shown always so user can schedule multiple sessions per partner */
+  /** All accepted swaps — shown always so user can schedule multiple sessions per partner.
+   *  Swaps where either party's account was deleted (null after populate) are excluded.
+   */
   readonly acceptedSwaps = computed(() =>
-    this.allSwaps().filter(s => s.status === 'accepted')
+    this.allSwaps().filter(s => s.status === 'accepted' && s.senderId != null && s.receiverId != null)
   );
 
   /** Count of sessions per swapRequestId — shown as a badge on each partner card */
@@ -626,7 +628,10 @@ export class SessionsComponent implements OnInit {
   }
 
   partnerOf(swap: SwapRequest): { _id: string; name: string; avatar?: string; university?: string } {
-    return swap.senderId._id === this.myId ? swap.receiverId : swap.senderId;
+    // senderId / receiverId can be null when a user account is deleted;
+    // fall back to a placeholder so the template never crashes.
+    const partner = swap.senderId?._id === this.myId ? swap.receiverId : swap.senderId;
+    return partner ?? { _id: '', name: 'Deleted User' };
   }
 
   avatarOfUser(u: { name: string; avatar?: string }): string {

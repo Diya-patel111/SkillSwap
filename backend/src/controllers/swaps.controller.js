@@ -80,8 +80,9 @@ exports.getMyRequests = async (req, res, next) => {
       .sort({ createdAt: -1 });
 
     // Group for convenience
-    const sent     = swaps.filter(s => s.senderId._id?.toString() === uid || s.senderId?.toString() === uid);
-    const received = swaps.filter(s => s.receiverId._id?.toString() === uid || s.receiverId?.toString() === uid);
+    // Use optional chaining on senderId/receiverId in case a referenced user was deleted (null after populate)
+    const sent     = swaps.filter(s => s.senderId?._id?.toString() === uid || s.senderId?.toString() === uid);
+    const received = swaps.filter(s => s.receiverId?._id?.toString() === uid || s.receiverId?.toString() === uid);
 
     res.json({
       data:  swaps,

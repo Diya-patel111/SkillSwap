@@ -712,7 +712,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (d) => {
           this.data.set(d);
-          this.pendingRequests.set(d.pendingRequests ?? []);
+          // Filter out requests where the sender's account has been deleted (senderId === null after populate)
+          this.pendingRequests.set((d.pendingRequests ?? []).filter(r => r.senderId != null));
           this.isLoading.set(false);
         },
         error: () => this.isLoading.set(false),

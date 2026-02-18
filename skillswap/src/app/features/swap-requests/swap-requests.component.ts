@@ -256,8 +256,9 @@ export class SwapRequestsComponent implements OnInit {
     this.isLoading = true;
     this.swapService.getMyRequests().subscribe({
       next: (res) => {
-        this.incoming = res.received;
-        this.sent     = res.sent;
+        // Filter out swaps where the other party's account has been deleted (null after populate)
+        this.incoming = res.received.filter(r => r.senderId != null && r.receiverId != null);
+        this.sent     = res.sent.filter(r => r.senderId != null && r.receiverId != null);
         this.isLoading = false;
       },
       error: () => { this.isLoading = false; },
