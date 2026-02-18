@@ -1,0 +1,34 @@
+{
+  "name": "skillswap-backend",
+  "version": "1.0.0",
+  "description": "SkillSwap REST API — Node.js + Express + MongoDB Atlas",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "start:prod": "NODE_ENV=production node src/app.js",
+    "dev": "node scripts/kill-port.js && nodemon src/app.js",
+    "kill": "node scripts/kill-port.js",
+    "lint": "echo 'Add ESLint if desired'"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.8.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "express-rate-limit": "^7.3.1",
+    "express-validator": "^7.1.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.1",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
